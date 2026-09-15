@@ -1,24 +1,197 @@
-# Compiled class file
-*.class
+import processing.core.*;
 
-# Log file
-*.log
+/**
+ * A circle that can be manipulated and that draws itself on a canvas.
+ * 
+ * @author  Michael Kölling and David J. Barnes (original)
+ * @author  Jason Oswald (adapted to PApplet)
+ * @version 7.P.0
+ */
 
-# BlueJ files
-*.ctxt
+public class Circle extends Canvas.Shape
+{
+    private int diameter;
+    private int xPosition;
+    private int yPosition;
+    private int fillColor;
+    private boolean isVisible;
+    private int xMovement = 0;
+    private int yMovement = 0;
+    private int radius;
+    
+    /**
+     * Create a new circle at default position with default color.
+     */
+    public Circle()
+    {
+        super();
+        diameter = 68;
+        xPosition = 230;
+        yPosition = 90;
+        fillColor = sketch.color(0,0,255);
+    }
 
-# Mobile Tools for Java (J2ME)
-.mtj.tmp/
+    /**
+     * Make this circle visible. If it was already visible, do nothing.
+     */
+    public void makeVisible() { isVisible = true; }
+    
+    /**
+     * Make this circle invisible. If it was already invisible, do nothing.
+     */
+    public void makeInvisible() { isVisible = false; }
+    
+    /**
+     * Move the circle a few pixels to the right.
+     */
+    public void moveRight()
+    {
+        moveHorizontal(20);
+    }
 
-# Package Files #
-*.jar
-*.war
-*.nar
-*.ear
-*.zip
-*.tar.gz
-*.rar
+    /**
+     * Move the circle a few pixels to the left.
+     */
+    public void moveLeft()
+    {
+        moveHorizontal(-20);
+    }
 
-# virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
-hs_err_pid*
-replay_pid*
+    /**
+     * Move the circle a few pixels up.
+     */
+    public void moveUp()
+    {
+        moveVertical(-20);
+    }
+
+    /**
+     * Move the circle a few pixels down.
+     */
+    public void moveDown()
+    {
+        moveVertical(20);
+    }
+
+    /**
+     * Move the circle horizontally by 'distance' pixels.
+     */
+    public void moveHorizontal(int distance)
+    {
+        xPosition += distance;
+    }
+
+    /**
+     * Move the circle vertically by 'distance' pixels.
+     */
+    public void moveVertical(int distance)
+    {
+        yPosition += distance;
+    }
+
+    /**
+     * Slowly move the circle horizontally by 'distance' pixels.
+     */
+    public void slowMoveHorizontal(int distance)
+    {
+        xMovement = distance;
+    }
+
+    /**
+     * Slowly move the circle vertically by 'distance' pixels.
+     */
+    public void slowMoveVertical(int distance)
+    {
+        yMovement = distance;
+    }
+
+    /**
+     * Change the size to the new size (in pixels). Size must be >= 0.
+     */
+    public void changeSize(int newDiameter)
+    {
+        diameter = newDiameter;
+    }
+    
+    /**
+     * Change the color. Valid colors are "red", "yellow", "blue", "green",
+     * "magenta" and "black".
+     */    
+    public void changeColor(String newColor) {
+        fillColor = getColor(newColor);
+    }
+
+    /**
+     * Draw the circle with current specifications on screen.
+     */
+    public void draw()
+    {
+        move();
+        bounce();
+        if(isVisible) {
+            sketch.fill(fillColor);
+            sketch.ellipse(xPosition, yPosition, diameter, diameter);            
+        }
+    }
+    
+    private void move() {
+        if( xMovement > 0 ) {
+            xPosition++;
+            xMovement--;
+        }
+        if( xMovement < 0 ) {
+            xPosition--;
+            xMovement++;
+        }        
+
+        if( yMovement > 0 ) {
+            yPosition++;
+            yMovement--;
+        }
+        if( yMovement < 0 ) {
+            yPosition--;
+            yMovement++;
+        }            
+    }
+
+    /**
+     * Erase the circle on screen.
+     */
+    private void erase()
+    {
+        sketch.erase(this);
+    }
+    private void bounce() {
+        radius = diameter/2;
+        if (xPosition+radius >= sketch.width) {
+            if (xMovement>0) {
+                xMovement *= -1;
+            }
+            else {
+                xPosition = sketch.width-radius;
+            }
+        }
+        if (xPosition - radius <= 0) {
+            if (xMovement <0) {
+                xMovement *= -1;
+            }
+            else {
+                xPosition = 0+radius;
+            }
+        }
+        if (yPosition+radius >= sketch.height) {
+            if (yMovement>0) {
+                yMovement *= -1;
+            }
+                yPosition = sketch.height-radius;
+        }
+        if (yPosition - radius <= 0) {
+            if (yMovement <0) {
+                yMovement *= -1;
+            }
+            else {
+                yPosition = 0+radius;
+            }
+        }
+    }
+}
